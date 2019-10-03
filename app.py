@@ -34,7 +34,7 @@ def authorize():
         'response_type': 'code',
         'scope': 'public'
     }
-    webbrowser.open('{}?{}'.format(url, urllib.urlencode(params)), new=2)
+    webbrowser.open('{}?{}'.format(url, urllib.parse.urlencode(params)), new=2)
 
 
 def request_token(authorization_code):
@@ -70,7 +70,7 @@ def request_random_photo(access_token):
         id_ = data['id']
         image_url = data['urls']['full']
         image_path = os.path.join(IMAGES_DIR, '{}.jpg'.format(id_))
-        urllib.urlretrieve(image_url, image_path)
+        urllib.request.urlretrieve(image_url, image_path)
         os.popen('/usr/bin/swift {} {}'.format(swift_app_path, image_path))
         return True
     return False
@@ -90,7 +90,7 @@ def main():
             db.dump()
     except KeyError:
         print('Please run python app.py authorize')
-    
+
 
 if __name__ == '__main__':
     check_images_dir()
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         command = sys.argv[1]
         if command.lower() == 'authorize':
             authorize()
-            code = raw_input('Please enter authorization code: ')
+            code = input('Please enter authorization code: ')
             data = request_token(code)
             db.set('access_token', data['access_token'])
             db.set('refresh_token', data['refresh_token'])

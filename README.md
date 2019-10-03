@@ -2,6 +2,12 @@
 
 Change every x minutes the wallpaper with a random high quality picture from [unsplash](unsplash.com)
 
+## Upgraded
+
+* Upgraded to support python3 and swift `5.0.1`
+* Supports multiple monitors
+
+
 ## Steps
 
 1. Register as a developer in https://unsplash.com/developers and create a new app

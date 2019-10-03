@@ -1,21 +1,30 @@
 #!/usr/bin/env swift
 
 import AppKit
+import Darwin
 
 func setWallpaper(wallpaperPath: String) {
-    let sharedWorkspace = NSWorkspace.sharedWorkspace()
-    let mainScreen = NSScreen.mainScreen()
-    let wallpaperUrl : NSURL = NSURL.fileURLWithPath(wallpaperPath)
-    do {
-        try sharedWorkspace.setDesktopImageURL(wallpaperUrl, forScreen: mainScreen!, options: [:])
-    } catch (let error) {
+  let sharedWorkspace = NSWorkspace.shared
+  let allScreens = NSScreen.screens
+
+  let wallpaperUrl : URL = NSURL.fileURL(withPath: wallpaperPath)
+
+  DispatchQueue.global(qos: .userInteractive).async {
+    for screen in allScreens {
+      let optScreen = Optional(screen)
+
+      do {
+        try sharedWorkspace.setDesktopImageURL(wallpaperUrl, for: optScreen!, options: [:])
+      } catch (let error) {
         print(error)
+      }
     }
+  }
 }
 
-if Process.arguments.count == 2 {
-    let wallpaperPath = Process.arguments[1]
-    setWallpaper(wallpaperPath)
+if CommandLine.arguments.count == 2 {
+  let wallpaperPath = CommandLine.arguments[1]
+  setWallpaper(wallpaperPath: wallpaperPath)
 } else {
-    print("Usage: \(Process.arguments[0]) WALLPAPER")
+  print("Usage: \(CommandLine.arguments[0]) WALLPAPER")
 }
